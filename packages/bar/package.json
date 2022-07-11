@@ -1,0 +1,8 @@
+{
+  "name": "@yawn/bar",
+  "packageManager": "yarn@3.2.1",
+  "main": "src/index.ts",
+  "dependencies": {
+    "@yawn/foo": "workspace:*"
+  }
+}

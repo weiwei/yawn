@@ -37,3 +37,14 @@ Open `.gitignore` and do the following:
 
 Now run `yarn install` or just `yarn` for short. This will install and link all dependencies for you. Now the project is empty, so it will just create a `node_modules` folder and add some dummy entries in `yarn.lock`.
 
+## Workspace
+
+Add the following line to `packag.json`:
+
+```json
+"workspaces": ["packages/*"]
+```
+
+This tells `yarn` to look for workspace packages under `packages` folder.
+
+## Create packages

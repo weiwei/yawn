@@ -1,5 +1,7 @@
 # yawn - A yarn workspace demo
 
+Note that this tutorial intends to use less yarn specific features. You'll see me disabling them in my config. You can skip them if you want these features.
+
 ## Init the project
 
 ```sh
@@ -17,3 +19,21 @@ This will create for you the following:
 * `package.json` - A bare-bone  package config file.
 * `README.md` - A dummy readme file.
 * `yarn.lock` - The version lock file. For now it is empty.
+
+## First `yarn install`
+
+Now open the `.yarnrc.yml` file and add this line.
+
+```yaml
+nodeLinker: node-modules
+```
+
+This disables yarn's plug-and-play feature. More on this later.
+
+Open `.gitignore` and do the following:
+
+* Comment out `!.yarn/cache`.
+* Add `node_modules`
+
+Now run `yarn install` or just `yarn` for short. This will install and link all dependencies for you. Now the project is empty, so it will just create a `node_modules` folder and add some dummy entries in `yarn.lock`.
+

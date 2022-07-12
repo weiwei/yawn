@@ -37,14 +37,155 @@ Open `.gitignore` and do the following:
 
 Now run `yarn install` or just `yarn` for short. This will install and link all dependencies for you. Now the project is empty, so it will just create a `node_modules` folder and add some dummy entries in `yarn.lock`.
 
-## Workspace
+## Configure Workspace
 
-Add the following line to `packag.json`:
+Add the following line to `package.json`:
 
 ```json
 "workspaces": ["packages/*"]
 ```
 
-This tells `yarn` to look for workspace packages under `packages` folder.
+This tells `yarn` to look for workspace packages under `packages` folder. 
+
+That's it. The workspace configuration is this simple.
 
 ## Create packages
+
+Now create some packages in the workspace.
+
+```sh
+mkdir packages
+cd packages
+mkdir foo bar
+```
+
+Run `yarn init` inside `foo` and `bar`. This generates `README.md` and `package.json` in both folders.
+
+It is customary to use namespaces for your package names. This avoids strange name clashes. Go change the `name` field and add `@yawn/` before it, e.g., `foo` to `@yawn/foo`. From then on, we'll refer the package in our code as `@yawn/foo` in dependency management and in package imports.
+
+Now back to root folder and run `yarn install`. This will resolve the newly created packages and undate the lockfile.
+
+Since we'll be creating Typescript packages with Jest, now go back to repo root and install some rudimentary packages:
+
+```sh
+yarn add --dev typescript jest @types/jest ts-node ts-jest @types/node
+```
+
+This way we have packages installed globally. This way we'll have exactly one place to manage all the dev dependencies, but the downside is that the commands only exists in the global scope. You'll see in the next section.
+
+## Typescript config
+
+Now we run `tsc --init` command to generate a default Typescript config for each package. As mentioned above, if the dependency is installed globally, you need to run `yarn WORKSPACE` commands to execute them in each package.
+
+The following WON'T work:
+
+```sh
+cd packages/foo
+yarn tsc --init
+Usage Error: Couldn't find a script named "tsc".
+```
+
+Instead you have to do this:
+
+```sh
+cd packages/foo
+yarn ./ run -T tsc --init
+```
+
+Or do this if you prefer to stay in the root folder:
+
+```sh
+yarn packages/foo run -T tsc --init
+```
+
+Do the same for all your packages.
+
+TIP: `yarn COMMAND` is equivalent to `yarn run COMMAND`, but when you use `yarn run`, you get the chance to add parameters for `yarn run` itself.
+
+## Add some code
+
+We'll write something inside `@yawn/foo`, and use it in `@yawn/bar`. The code will be very simple:
+
+Create `index.ts` inside `foo` with the following content:
+
+```ts
+export const FOO = 3;
+```
+
+Create `index.ts` inside `bar` with the following content:
+
+```ts
+import { FOO } from "@yawn/foo"
+
+export const BAR = FOO * 2
+```
+
+If your editor reports an error for the import line, run `yarn install` at root, the error should go away.
+
+But how do we know it works? We need to write some tests, but first we need configure the test environment.
+
+## Configure jest
+
+Run the following command in each package, where WORKSPACE can be `packages/foo` or `packages/bar`:
+
+```sh
+yarn WORKSPACE run -T jest --init
+```
+
+* Would you like to use Jest when running "test" script in "package.json"? » Y (But we'll need to change it later)
+* Would you like to use Typescript for the configuration file? » Y (Why not)
+* Choose the test environment that will be used for testing » node (We can use default for now)
+* Do you want Jest to add coverage reports? » N (What's the point)
+* Which provider should be used to instrument code for coverage? » v8 (Just keep the default)
+* Automatically clear mock calls, instances, contexts and results before every test? » N (Keep default)
+
+Do the same for all packages.
+
+## Create tests
+
+Create `index.test.ts` inside `foo` with the following content:
+
+```ts
+import { FOO } from "."
+
+test("FOO", () => {
+    expect(FOO).toEqual(3)
+})
+```
+
+And for `bar/index.test.ts`:
+
+```ts
+import { BAR } from "."
+import { FOO } from "@yawn/foo"
+test("BAR", () => {
+    expect(BAR).toEqual(FOO * 2)
+    expect(BAR).toEqual(6)
+})
+```
+
+Now run test for each package (substitute `WORKSPACE` with `packages/foo`, etc.):
+
+```sh
+yarn WORKSPACE run -T jest
+```
+
+All tests should pass, which means the workspaces work fine.
+
+## How dependencies work
+
+When we run `yarn install`, the `foo` and `bar` packages will be "installed" inside `node_modules`. It isn't a real install though, just a symlink to the actual package folder.
+
+When we import a package in `import { FOO } from "@yawn/foo"`, it will actually find the package inside `node_modules`, then trace back to the actual `packages/foo` folder to resolve the import.
+
+This mechanism allows packages to refer one another without adding dependencies inside `package.json`, i.e., we don't need to add `"@yawn/foo"` as a dependency inside `packages/bar/package.json`.
+
+However, a package may have different versions located in a NPM package registry or locally. To make sure we're referring to the right one, it's good practice to add explicitly all the package dependencies. so in `packages/bar/package.json`, we should add this section:
+
+```json
+  "dependencies": {
+    "@yawn/foo": "workspace:*"
+  }
+```
+
+The `"workspace:*"` part is `yarn` and `pnpm` specific. It tells the tools that we'll be using workspace packages, nothing else. For now it doesn't work well with `lerna`, but there is hope that it may work later. More on this later.

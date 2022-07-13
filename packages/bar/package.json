@@ -1,10 +1,12 @@
 {
   "name": "@yawn/bar",
   "packageManager": "yarn@3.2.1",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "run -T jest",
-    "build": "run -T webpack --config webpack.config.js"
+    "bundle": "run -T webpack --config webpack.config.js",
+    "build": "run -T tsc"
   },
   "dependencies": {
     "@yawn/foo": "workspace:*"

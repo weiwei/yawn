@@ -6,7 +6,7 @@ const isProduction = process.env.NODE_ENV == 'production';
 const config = {
     entry: './index.ts',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'bundle'),
     },
     module: {
         rules: [

@@ -240,7 +240,7 @@ const isProduction = process.env.NODE_ENV == 'production';
 const config = {
     entry: './index.ts',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, 'bundle'),
     },
     module: {
         rules: [
@@ -296,5 +296,55 @@ Run `node packages/bar/dist/main.js`, it will print out the log.
 
 ## Publish
 
+We'll be using `tsc` to generate the built package in order to publish. Change in `tsconfig.json`:
+
+* Add the following as `compilerOptions`
+  
+```json
+"declaration": true,
+"outDir": "./dist",
+```
+
+Optionally, set `declarationMap` and `sourceMap` to `true`. This should be useful if the user of the package want to debug into it.
+
+* Add ignore pattern:
+
+```json
+  "exclude": [
+    "**/*.test.ts",
+    "jest.config.ts"
+  ]
+```
+
+After that, add the build script in `package.json`:
+
+```json
+"build": "run -T tsc"
+```
+
+Running it will generate `js` files under `dist`, which are to be packaged for publishing.
+
+Now add `.npmignore` with the following content:
+
+```
+*.test.ts
+*.config.js
+*.config.ts
+tsconfig.json
+```
+
+Under a package run `yarn pack --dry-run` to see which files are being packed. For me I get the following:
+
+```
+➤ YN0000: README.md
+➤ YN0000: dist/index.d.ts
+➤ YN0000: dist/index.js
+➤ YN0000: dist/index.js.map
+➤ YN0000: index.ts
+➤ YN0000: package.json
+➤ YN0000: Done in 0s 12ms
+```
+
+Looks good for publishing. If you have a npm account, run `yarn npm publish` to see how it goes.
 
 ## Lerna

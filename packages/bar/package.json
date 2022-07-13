@@ -3,7 +3,8 @@
   "packageManager": "yarn@3.2.1",
   "main": "src/index.ts",
   "scripts": {
-    "test": "run -T jest"
+    "test": "run -T jest",
+    "build": "run -T webpack --config webpack.config.js"
   },
   "dependencies": {
     "@yawn/foo": "workspace:*"

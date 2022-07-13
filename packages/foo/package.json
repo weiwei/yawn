@@ -4,6 +4,7 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "test": "yarn run -T jest"
+    "test": "yarn run -T jest",
+    "build": "run -T webpack --config webpack.config.js"
   }
 }

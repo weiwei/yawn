@@ -223,7 +223,76 @@ Now in the project root run `yarn workspaces foreach run test`. This will execut
 
 The build step generates something that's ready to be deployed or used directly. In our simple example, we'll generate a Javascript file that when we run it, it prints out the `BAR` value it contains. Real apps have more complex builds, but this should be sufficient for a demo.
 
+We'll be using the old school webpack for this. First install webpack in the project level.
 
+```sh
+yarn add --dev webpack webpack-cli ts-loader
+```
+
+Create webpack config inside `foo` and `bar`, named `webpack.config.js`, with the following content
+
+```js
+const path = require('path');
+
+const isProduction = process.env.NODE_ENV == 'production';
+
+
+const config = {
+    entry: './index.ts',
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+    },
+    module: {
+        rules: [
+            {
+                test: /\.(ts|tsx)$/i,
+                loader: 'ts-loader',
+                exclude: ['/node_modules/'],
+            }
+        ],
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.jsx', '.js', '...'],
+    },
+};
+
+module.exports = () => {
+    if (isProduction) {
+        config.mode = 'production';
+        
+        
+    } else {
+        config.mode = 'development';
+    }
+    return config;
+};
+
+```
+
+NOTE: This file is generated with `@webpack/generators` and `webpack init`, then stripped some unnecessary things away.
+
+This will bundle the Typescript package into a `dist/main.js` file.
+
+BTW, add `**/dist` into your `.gitignore` to skip built files.
+
+Also add build script into `package.json` files:
+
+```json
+  "scripts": {
+    "test": "yarn run -T jest",
+    "build": "run -T webpack --config webpack.config.js" // Add this line
+  }
+```
+
+Add the following to `bar/index.ts` so that it actually does something:
+
+```ts
+console.log("BAR is", BAR)
+```
+
+Now you can run `yarn workspaces foreach run build`.
+
+Run `node packages/bar/dist/main.js`, it will print out the log.
 
 ## Publish
 

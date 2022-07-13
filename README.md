@@ -1,6 +1,6 @@
 # yawn - A yarn workspace demo
 
-Note that this tutorial intends to use less yarn specific features. You'll see me disabling them in my config. You can skip them if you want these features.
+Note that this document intends to mirror an actual work project, so I choose to use less yarn specific features and to use Webpack, not some popular guys on the stage.
 
 ## Init the project
 
@@ -192,9 +192,38 @@ The `"workspace:*"` part is `yarn` and `pnpm` specific. It tells the tools that 
 
 A caveat: The `index.ts` files have to stay in the package root directory (`packages/foo/index.ts`) in order to work. In theory, you could put it under a subfolder, such as `packages/foo/src/index.ts`, but you need to update the `main` entry inside `package.json` and set it to `./src/index.ts`. This is not ideal, because when we publish the package, all Typescript will be transpiled to Javascript, and this `main` entry should be pointing to the transpile result, something like `lib/index.js`. Therefore, it should be a good idea to just create `index.ts` at package root.
 
+
+## Add a workspace script
+
+In `packages/foo/package.json`, add the following:
+
+```json
+  "scripts": {
+    "test": "run -T jest"
+  }
+```
+
+We're using the global jest install, to  so the `run -T` is necessary.
+
+Do the same for `packages/bar/package.json`.
+
+Now if you cd to `foo` or `bar`, you can run `yarn test` under that directory to run unit tests.
+
+## Yarn foreach
+
+Yarn has plugins that facilitates monorepo scripts. Follow [the official doc](https://yarnpkg.com/cli/workspaces/foreach) and install the plugin:
+
+```sh
+yarn plugin import workspace-tools
+```
+
+Now in the project root run `yarn workspaces foreach run test`. This will execute `yarn test` in all your workspaces.
+
 ## Build
 
 The build step generates something that's ready to be deployed or used directly. In our simple example, we'll generate a Javascript file that when we run it, it prints out the `BAR` value it contains. Real apps have more complex builds, but this should be sufficient for a demo.
+
+
 
 ## Publish
 

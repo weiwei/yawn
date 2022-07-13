@@ -2,6 +2,9 @@
   "name": "@yawn/bar",
   "packageManager": "yarn@3.2.1",
   "main": "src/index.ts",
+  "scripts": {
+    "test": "run -T jest"
+  },
   "dependencies": {
     "@yawn/foo": "workspace:*"
   }

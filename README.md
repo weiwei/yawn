@@ -348,3 +348,5 @@ Under a package run `yarn pack --dry-run` to see which files are being packed. F
 Looks good for publishing. If you have a npm account, run `yarn npm publish` to see how it goes.
 
 ## Lerna
+
+Despite that yarn document claims that lerna works fine with it, it actually isn't. The main issue being that `lerna` doesn't recognize it when the package version is specified as `workspace:*`. This will hopefully be fixed after Lerna is taken over by @Nrwl. For now there is little point using lerna with yarn 2.

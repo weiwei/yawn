@@ -4,6 +4,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "test": "yarn workspaces foreach -pt run test",
+    "build": "yarn workspaces foreach -pt run build"
+  },
   "devDependencies": {
     "@types/jest": "^28.1.4",
     "@types/node": "^18.0.3",

@@ -350,3 +350,14 @@ Looks good for publishing. If you have a npm account, run `yarn npm publish` to 
 ## Lerna
 
 Despite that yarn document claims that lerna works fine with it, it actually isn't. The main issue being that `lerna` doesn't recognize it when the package version is specified as `workspace:*`. This will hopefully be fixed after Lerna is taken over by @Nrwl. For now there is little point using lerna with yarn 2.
+
+## QOL improvement
+
+Add some scripts in the root `package.json`:
+
+```json
+    "test": "yarn workspaces foreach -pt run test",
+    "build": "yarn workspaces foreach -pt run build"
+```
+
+Most of the configurations in each package will look almost the same. Consider create a common one and let each package use it.

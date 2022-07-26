@@ -192,6 +192,7 @@ The `"workspace:*"` part is `yarn` and `pnpm` specific. It tells the tools that 
 
 A caveat: The `index.ts` files have to stay in the package root directory (`packages/foo/index.ts`) in order to work. In theory, you could put it under a subfolder, such as `packages/foo/src/index.ts`, but you need to update the `main` entry inside `package.json` and set it to `./src/index.ts`. This is not ideal, because when we publish the package, all Typescript will be transpiled to Javascript, and this `main` entry should be pointing to the transpile result, something like `lib/index.js`. Therefore, it should be a good idea to just create `index.ts` at package root.
 
+Update on caveat: Actually this method is not reliable. If you have built the project and have built result in `dist`, and have `main` set to `./dist/index.js`, the code may actually resolve to that. So it is still better to set explicitly the paths in the root `tsconfig.json`.
 
 ## Add a workspace script
 

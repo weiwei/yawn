@@ -100,12 +100,9 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
-  // "path": {
-  //   "@yawn/foo": ["packages/foo/src/index.ts"],
-  //   "@yawn/bar": ["packages/bar/src/index.ts"]
-  // },
   "exclude": [
     "**/*.test.ts",
-    "jest.config.ts"
-  ]
+    "**/jest.config.ts",
+    "**/dist/*"
+  ],
 }

@@ -6,7 +6,8 @@
   ],
   "scripts": {
     "test": "yarn workspaces foreach -pt run test",
-    "build": "yarn workspaces foreach -pt run build"
+    "build": "yarn workspaces foreach -pt run build",
+    "clean": "yarn workspaces foreach -pt run clean"
   },
   "devDependencies": {
     "@types/jest": "^28.1.4",

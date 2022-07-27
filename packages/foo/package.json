@@ -5,6 +5,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "yarn run -T jest",
-    "build": "run -T tsc"
+    "build": "run -T tsc --build --verbose",
+    "clean": "run -T tsc --build --clean"
   }
 }

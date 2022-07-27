@@ -1,6 +1,6 @@
 {
-  "extends": "../../tsconfig.json",
-  "complierOptions": {
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
     "outDir": "./dist"
   },
   "references": [
